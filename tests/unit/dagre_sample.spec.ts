@@ -41,8 +41,8 @@ describe("Dagre Sample", () => {
                 width: 144,
                 height: 100
             });
-            g.setNode("kbacon", {
-                label: "Kevin Bacon",
+            g.setNode("kbaconnet", {
+                label: "Kevin Baconnet",
                 width: 121,
                 height: 100
             });
