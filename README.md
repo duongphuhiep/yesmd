@@ -1,8 +1,8 @@
 # yesmd
 
-A functional stack [vuetify](https://vuetifyjs.com) + [typescript](https://www.typescriptlang.org/) + [jest](https://jestjs.io/)
-
-- At the moment of 2019-12-22 they won't work together out of the box, but need small tweaks here and there...
+https://github.com/pouchdb/pouchdb - sync couchdb
+https://github.com/dagrejs/dagre/wiki
+http://fabricjs.com/
 
 ## Project setup
 
