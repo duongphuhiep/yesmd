@@ -14,7 +14,7 @@ export namespace model {
     }
 
     export interface YModel {
-        Kinds: Kind[]
+        Kinds: Kind[];
         Relations: Relation[]
     }
 
@@ -24,9 +24,9 @@ export namespace model {
         /*0-N*/
         Reference = 1,
         /*1-1*/
-        Unique = 2,
+        UniqueOptional = 2,
         /*0-1*/
-        UniqueOptional = 3,
+        Unique = 3,
         /*Inheritance*/
         Extension = 4,
     }
@@ -53,7 +53,7 @@ export function BuildDagreGraph(src: model.YModel): dagre.graphlib.Graph {
     let g = new dagre.graphlib.Graph();
 
     // Set an object for the graph label
-    //g.setGraph({});
+    g.setGraph({});
 
     src.Kinds.forEach(k => {
         let dim = estimateSize(k.name.length);
@@ -66,6 +66,11 @@ export function BuildDagreGraph(src: model.YModel): dagre.graphlib.Graph {
         )
     });
 
+    // Default to assigning a new object as a label for each new edge.
+    g.setDefaultEdgeLabel(function () {
+        return {};
+    });
+    
     src.Relations.forEach(r => {
         g.setEdge(r.child, r.parent);
     });
