@@ -3,7 +3,7 @@ export namespace model {
     export interface Kind {
         id: string;
         name: string;
-        isLink: boolean;
+        isLink?: boolean;
     }
 
     export interface Relation {
@@ -15,7 +15,7 @@ export namespace model {
 
     export interface YModel {
         Kinds: Kind[];
-        Relations: Relation[]
+        Relations: Relation[];
     }
 
     export enum RelationType {
@@ -35,45 +35,51 @@ export namespace model {
         width: number;
         height: number;
     }
-
 }
 //#endregion
 
-const OneChar: model.Dimension = { width: 20, height: 36 };
-const Padding: model.Dimension = { width: 30, height: 30 };
-
-function estimateSize(textLength: number): model.Dimension {
-    return { width: OneChar.width * textLength, height: OneChar.height };
-}
-
 import dagre from "dagre";
+import { fabric } from "fabric";
 
+export namespace converter {
+    const OneChar: model.Dimension = { width: 20, height: 36 };
+    const Padding: model.Dimension = { width: 30, height: 30 };
 
-export function BuildDagreGraph(src: model.YModel): dagre.graphlib.Graph {
-    let g = new dagre.graphlib.Graph();
+    function EstimateSize(textLength: number): model.Dimension {
+        return { width: OneChar.width * textLength, height: OneChar.height };
+    }
 
-    // Set an object for the graph label
-    g.setGraph({});
+    export function BuildDagreGraph(src: model.YModel): dagre.graphlib.Graph {
+        let g = new dagre.graphlib.Graph();
 
-    src.Kinds.forEach(k => {
-        let dim = estimateSize(k.name.length);
-        g.setNode(k.id,
-            {
+        // Set an object for the graph label
+        g.setGraph({});
+
+        src.Kinds.forEach(k => {
+            let dim = EstimateSize(k.name.length);
+            g.setNode(k.id, {
                 label: k.name,
                 width: dim.width + Padding.width,
-                height: dim.height + Padding.height
-            }
-        )
-    });
+                height: dim.height + Padding.height,
+            });
+            let newNode = g.node(k.id);
+        });
 
-    // Default to assigning a new object as a label for each new edge.
-    g.setDefaultEdgeLabel(function () {
-        return {};
-    });
-    
-    src.Relations.forEach(r => {
-        g.setEdge(r.child, r.parent);
-    });
+        // Default to assigning a new object as a label for each new edge.
+        g.setDefaultEdgeLabel(function() {
+            return {};
+        });
 
-    return g;
+        src.Relations.forEach(r => {
+            g.setEdge(r.child, r.parent);
+        });
+
+        return g;
+    }
+
+    interface KindDetail {
+        core: model.Kind;
+        ui?: fabric.Group;
+        layout?: dagre.Node;
+    }
 }

@@ -1,4 +1,4 @@
-import { model, BuildDagreGraph } from "@/logic/graph.ts";
+import { model, converter } from "@/logic/graph.ts";
 import dagre from "dagre";
 
 describe("GraphTest", () => {
@@ -7,7 +7,7 @@ describe("GraphTest", () => {
             let simpleModel: model.YModel = (
                 await import("tests/data-samples/simpleModel.js")
             ).default;
-            let g = BuildDagreGraph(simpleModel);
+            let g = converter.BuildDagreGraph(simpleModel);
             expect(g.edgeCount()).toEqual(1);
             expect(g.nodeCount()).toEqual(2);
             expect(g.node("user").width).toBeLessThan(g.node("group").width);
@@ -22,7 +22,7 @@ describe("GraphTest", () => {
             let simpleModel: model.YModel = (
                 await import("tests/data-samples/simpleModel.js")
             ).default;
-            let g = BuildDagreGraph(simpleModel);
+            let g = converter.BuildDagreGraph(simpleModel);
 
             dagre.layout(g);
             
