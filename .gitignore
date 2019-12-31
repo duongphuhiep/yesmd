@@ -20,3 +20,5 @@ yarn-error.log*
 *.sw?
 
 .history/
+.draft/
+pnpm-debug.log
