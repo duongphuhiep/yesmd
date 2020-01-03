@@ -5,6 +5,7 @@ dependencies:
   pouchdb: 7.1.1
   vue: 2.6.11
   vue-class-component: 7.1.0
+  vue-moveable: 1.3.0_vue@2.6.11
   vue-property-decorator: 8.3.0
   vue-router: 3.1.3
   vuetify: 2.1.15_vue@2.6.11
@@ -11368,6 +11369,14 @@ packages:
         optional: true
     resolution:
       integrity: sha512-yFksTFbhp+lxlm92DrKdpVIWMpranXnTEuGSc0oW+Gk43M9LWaAmBTnfj5+FCdve715mTHvo78IdaXf5TbiTJg==
+  /vue-moveable/1.3.0_vue@2.6.11:
+    dependencies:
+      vue: 2.6.11
+    dev: false
+    peerDependencies:
+      vue: ~2
+    resolution:
+      integrity: sha512-Gh2AUQ4oEWp2pEKMmLd6u6ELKvrKgAGaSwZuxZv4SkYBGWoXQqah8vhqiqM11dKsL42dWpbcFuYK0g13DhtQiw==
   /vue-property-decorator/8.3.0:
     dependencies:
       vue-class-component: 7.1.0
@@ -11929,6 +11938,7 @@ specifiers:
   vue-class-component: ^7.1.0
   vue-cli-plugin-vuetify: ^2.0.2
   vue-jest: ^3.0.5
+  vue-moveable: ^1.3.0
   vue-property-decorator: ^8.3.0
   vue-router: ^3.1.3
   vue-template-compiler: ^2.6.11
