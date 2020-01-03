@@ -6,7 +6,7 @@ describe("Pouch Sample", () => {
         try {
             //remove old database created by the previous test
             rimraf.sync(".history/sample-database");
-            
+
             //create a new database in the hard disk
             let db = new PouchDB(".history/sample-database");
             let dbinfo = await db.info();

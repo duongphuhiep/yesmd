@@ -9,7 +9,7 @@ describe("Dagre Sample", () => {
             g.setGraph({});
 
             // Default to assigning a new object as a label for each new edge.
-            g.setDefaultEdgeLabel(function () {
+            g.setDefaultEdgeLabel(function() {
                 return {};
             });
 
@@ -19,32 +19,32 @@ describe("Dagre Sample", () => {
             g.setNode("kspacey", {
                 label: "Kevin Spacey",
                 width: 144,
-                height: 100
+                height: 100,
             });
             g.setNode("swilliams", {
                 label: "Saul Williams",
                 width: 160,
-                height: 100
+                height: 100,
             });
             g.setNode("bpitt", {
                 label: "Brad Pitt",
                 width: 108,
-                height: 100
+                height: 100,
             });
             g.setNode("hford", {
                 label: "Harrison Ford",
                 width: 168,
-                height: 100
+                height: 100,
             });
             g.setNode("lwilson", {
                 label: "Luke Wilson",
                 width: 144,
-                height: 100
+                height: 100,
             });
             g.setNode("kbaconnet", {
                 label: "Kevin Baconnet",
                 width: 121,
-                height: 100
+                height: 100,
             });
 
             // Add edges to the graph.
@@ -53,12 +53,12 @@ describe("Dagre Sample", () => {
             g.setEdge("bpitt", "kbacon");
             g.setEdge("hford", "lwilson");
             g.setEdge("lwilson", "kbacon");
-            
+
             dagre.layout(g);
-            
+
             g.nodes().forEach(function(v: string) {
                 console.log("Node " + v + ": ", g.node(v));
-           });
+            });
         } catch (err) {
             console.error(err);
         }
