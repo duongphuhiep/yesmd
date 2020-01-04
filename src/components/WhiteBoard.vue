@@ -31,7 +31,18 @@ export default class WhiteBoard extends Vue {
     height: number = 500;
     mounted(): void {
         d3.forceSimulation(this.src.Kinds)
-            //.force("link", d3.forceLink().links())
+            .force(
+                "link",
+                d3.forceLink(this.src.Relations).distance(l => {
+                    let source = l.source as Graph.Kind;
+                    let target = l.target as Graph.Kind;
+                    let d = 0;
+                    if (source && target) {
+                        d = Graph.minDistant(source, target);
+                    }
+                    return d == 0 ? 50 : d + 40;
+                })
+            )
             .force("charge", d3.forceManyBody())
             .force("center", d3.forceCenter(this.width / 2, this.height / 2));
     }
