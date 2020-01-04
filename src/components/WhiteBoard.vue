@@ -6,7 +6,12 @@
         style="border:1px solid #ccc"
     >
         <Relation :key="r.id" v-for="r in src.Relations" :src="r"></Relation>
-        <Kind :key="k.id" v-for="k in src.Kinds" :src="k"></Kind>
+        <Kind
+            :key="k.id"
+            v-for="k in src.Kinds"
+            :src="k"
+            :simulation="simulation"
+        ></Kind>
     </svg>
 </template>
 
@@ -29,8 +34,9 @@ export default class WhiteBoard extends Vue {
     } */
     width: number = 500;
     height: number = 500;
-    mounted(): void {
-        d3.forceSimulation(this.src.Kinds)
+    get simulation() {
+        return d3
+            .forceSimulation(this.src.Kinds)
             .force(
                 "link",
                 d3.forceLink(this.src.Relations).distance(l => {
@@ -43,8 +49,9 @@ export default class WhiteBoard extends Vue {
                     return d == 0 ? 50 : d + 40;
                 })
             )
-            .force("charge", d3.forceManyBody())
+            .force("charge", d3.forceManyBody().distanceMin(40))
             .force("center", d3.forceCenter(this.width / 2, this.height / 2));
     }
+    mounted(): void {}
 }
 </script>

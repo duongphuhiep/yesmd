@@ -30,10 +30,13 @@
 import { Vue, Prop, Component, Model } from "vue-property-decorator";
 import { Graph } from "@/logic/graph";
 import { Utils } from "@/logic/utils";
+import * as d3 from "d3";
 
 @Component
 export default class Kind extends Vue {
     readonly PADDING: number = 20;
+
+    @Prop(Object) readonly simulation!: d3.Simulation<Graph.Kind, undefined>;
 
     @Model("change", { type: Object })
     readonly src!: Graph.Kind;
@@ -75,6 +78,15 @@ export default class Kind extends Vue {
             clientX: this.src.x || 0,
             clientY: this.src.y || 0,
         };
+
+        if (this.simulation) {
+            this.simulation.alphaTarget(0.3).restart();
+        }
+        if (this.src) {
+            this.src.fx = this.src.x;
+            this.src.fy = this.src.y;
+        }
+
         document.addEventListener("mousemove", this.drag);
         document.addEventListener("mouseup", this.drageEnd, { once: true });
     }
@@ -86,21 +98,22 @@ export default class Kind extends Vue {
             this.dragOriginPos &&
             this.dragRegionDim
         ) {
-            this.src.x = Utils.round(
+            let x = Utils.round(
                 this.dragOriginPos.clientX +
                     e.clientX -
                     this.dragCursorStartPos.clientX,
                 this.PADDING,
                 this.dragRegionDim.width
             );
-            this.src.y = Utils.round(
+            let y = Utils.round(
                 this.dragOriginPos.clientY +
                     e.clientY -
                     this.dragCursorStartPos.clientY,
                 this.PADDING,
                 this.dragRegionDim.height
             );
-            //this.$emit("change");
+            this.src.fx = x;
+            this.src.fy = y;
         }
     }
 
@@ -109,6 +122,10 @@ export default class Kind extends Vue {
         document.removeEventListener("mouseup", this.drageEnd);
         this.dragging = false;
         this.dragCursorStartPos = null;
+
+        this.simulation.alphaTarget(0);
+        this.src.fx = null;
+        this.src.fy = null;
     }
 
     //#endregion
