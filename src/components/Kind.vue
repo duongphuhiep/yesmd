@@ -2,11 +2,11 @@
     <g
         class="Kind"
         @mousedown.prevent="startDrag"
-        :transform="'translate(' + realX + ' ' + realY + ')'"
+        :transform="'translate(' + src.x + ' ' + src.y + ')'"
     >
         <rect
-            :width="realWidth"
-            :height="realHeight"
+            :width="src.width"
+            :height="src.height"
             fill="yellow"
             stroke="black"
             stroke-width="2"
@@ -14,8 +14,8 @@
 
         <text
             class="Label"
-            :x="realWidth / 2"
-            :y="realHeight / 2"
+            :x="src.width / 2"
+            :y="src.height / 2"
             dominant-baseline="middle"
             text-anchor="middle"
             text-rendering="geometricPrecision"
@@ -29,52 +29,35 @@
 <script lang="ts">
 /*        @mousemove="drag"
         @mouseup="endDrag"*/
-import { Vue, Prop, Component } from "vue-property-decorator";
-import { Model } from "@/logic/graph";
+import { Vue, Prop, Component, Model } from "vue-property-decorator";
+import { Graph } from "@/logic/graph";
 import { Utils } from "@/logic/utils";
 
-@Component({
-    props: {
-        src: Object as () => Model.Kind,
-    },
-})
+@Component
 export default class Kind extends Vue {
     readonly PADDING: number = 20;
-    @Prop(Number) readonly x!: number | null;
-    @Prop(Number) readonly y!: number | null;
-    @Prop(Number) readonly width!: number | null;
-    @Prop(Number) readonly height!: number | null;
-    //@Prop(Object) readonly src!: model.Kind;
 
-    realX: number = this.x || 0;
-    realY: number = this.x || 0;
-    textBoxSize: Utils.Dimension = {
-        width: 0,
-        height: 0,
-    };
-
-    get realWidth() {
-        return (
-            this.width ||
-            Utils.round(this.textBoxSize.width + this.PADDING, this.PADDING)
-        );
-    }
-    get realHeight() {
-        return (
-            this.height ||
-            Utils.round(this.textBoxSize.height + this.PADDING, this.PADDING)
-        );
-    }
-    get centerX() {
-        return (this.realX || 0) + this.realWidth / 2;
-    }
-    get centerY() {
-        return (this.realY || 0) + this.realHeight / 2;
-    }
+    @Model("change", { type: Object })
+    readonly src!: Graph.KindDetail;
 
     mounted() {
-        this.textBoxSize = (this.$refs.txt as SVGTextElement).getBBox();
+        let textBoxSize = (this.$refs.txt as SVGTextElement).getBBox();
+        this.src.width = Utils.round(
+            textBoxSize.width + this.PADDING,
+            this.PADDING
+        );
+        this.src.height = Utils.round(
+            textBoxSize.height + this.PADDING,
+            this.PADDING
+        );
+        this.$emit("change");
     }
+
+    // @Watch("bound")
+    // onBoundChanged(newValue: Utils.Bound): void {
+
+    //     console.log(newValue);
+    // }
 
     //#region Draggable
 
@@ -91,13 +74,13 @@ export default class Kind extends Vue {
         }
         let canvas = canvasNode as SVGSVGElement;
         this.dragRegionDim = {
-            width: canvas.clientWidth - this.realWidth,
-            height: canvas.clientHeight - this.realHeight,
+            width: canvas.clientWidth - this.src.width,
+            height: canvas.clientHeight - this.src.height,
         };
 
         this.dragging = true;
         this.dragCursorStartPos = e;
-        this.dragOriginPos = { clientX: this.realX, clientY: this.realY };
+        this.dragOriginPos = { clientX: this.src.x, clientY: this.src.y };
         document.addEventListener("mousemove", this.drag);
         document.addEventListener("mouseup", this.endDrag, { once: true });
     }
@@ -109,20 +92,21 @@ export default class Kind extends Vue {
             this.dragOriginPos &&
             this.dragRegionDim
         ) {
-            this.realX = Utils.round(
+            this.src.x = Utils.round(
                 this.dragOriginPos.clientX +
                     e.clientX -
                     this.dragCursorStartPos.clientX,
                 this.PADDING,
-                this.dragRegionDim.width,
+                this.dragRegionDim.width
             );
-            this.realY = Utils.round(
+            this.src.y = Utils.round(
                 this.dragOriginPos.clientY +
                     e.clientY -
                     this.dragCursorStartPos.clientY,
                 this.PADDING,
-                this.dragRegionDim.height,
+                this.dragRegionDim.height
             );
+            this.$emit("change");
         }
     }
 
