@@ -32,8 +32,8 @@ export default class WhiteBoard extends Vue {
     /* get g(): Graph.YModelDetail {
         return Graph.buildDetail(this.src);
     } */
-    width: number = 500;
-    height: number = 500;
+    width: number = 1000;
+    height: number = 800;
     get simulation() {
         return d3
             .forceSimulation(this.src.Kinds)
@@ -49,7 +49,13 @@ export default class WhiteBoard extends Vue {
                     return d == 0 ? 50 : d + 40;
                 })
             )
-            .force("charge", d3.forceManyBody().distanceMin(40))
+            .force(
+                "charge",
+                d3
+                    .forceManyBody()
+                    .distanceMin(40)
+                    .distanceMax(this.width)
+            )
             .force("center", d3.forceCenter(this.width / 2, this.height / 2));
     }
     mounted(): void {}
