@@ -1,21 +1,19 @@
 <template>
-    <div class="home">
-        <!--
-        <FabricSample></FabricSample>
-        <PouchSample></PouchSample>-->
-        <WhiteBoard></WhiteBoard>
+    <div class="Home">
+        <WhiteBoard :src="graph"></WhiteBoard>
     </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import Component from "vue-class-component";
-// import FabricSample from "@/components/FabricSample.vue";
-// import PouchSample from "@/components/PouchSample.vue";
+import { Vue, Component } from "vue-property-decorator";
 import WhiteBoard from "@/components/WhiteBoard.vue";
 
+import fakeData from "@/../tests/data-samples/simpleModel.js";
+
 @Component({
-    components: { /* FabricSample, PouchSample, */ WhiteBoard },
+    components: { WhiteBoard },
 })
-export default class Home extends Vue {}
+export default class Home extends Vue {
+    graph = fakeData;
+}
 </script>

@@ -1,5 +1,5 @@
 //#region model
-export namespace model {
+export namespace Model {
     export interface Kind {
         id: string;
         name: string;

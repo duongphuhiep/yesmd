@@ -30,12 +30,12 @@
 /*        @mousemove="drag"
         @mouseup="endDrag"*/
 import { Vue, Prop, Component } from "vue-property-decorator";
-import { model } from "@/logic/graph";
+import { Model } from "@/logic/graph";
 import { Utils } from "@/logic/utils";
 
 @Component({
     props: {
-        src: Object as () => model.Kind,
+        src: Object as () => Model.Kind,
     },
 })
 export default class Kind extends Vue {
@@ -54,11 +54,15 @@ export default class Kind extends Vue {
     };
 
     get realWidth() {
-        return this.width || Utils.round(this.textBoxSize.width + this.PADDING);
+        return (
+            this.width ||
+            Utils.round(this.textBoxSize.width + this.PADDING, this.PADDING)
+        );
     }
     get realHeight() {
         return (
-            this.height || Utils.round(this.textBoxSize.height + this.PADDING)
+            this.height ||
+            Utils.round(this.textBoxSize.height + this.PADDING, this.PADDING)
         );
     }
     get centerX() {
