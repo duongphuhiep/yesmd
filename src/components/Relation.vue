@@ -1,5 +1,12 @@
 <template>
-    <line class="Relation" :x1="l.x1" :y1="l.y1" :x2="l.x2" :y2="l.y2"></line>
+    <line
+        class="Relation"
+        :x1="l.x1"
+        :y1="l.y1"
+        :x2="l.x2"
+        :y2="l.y2"
+        :stroke="color"
+    ></line>
 </template>
 
 <script lang="ts">
@@ -10,6 +17,12 @@ import { Utils } from "@/logic/utils";
 @Component
 export default class Relation extends Vue {
     @Prop(Object) readonly src!: Graph.Relation;
+
+    get color() {
+        let source = this.src.source as Graph.Kind;
+        if (source && source.isLink) return "cyan";
+        return "red";
+    }
     get l(): Utils.Line {
         let source = this.src.source as Graph.Kind;
         let target = this.src.target as Graph.Kind;
@@ -47,7 +60,6 @@ export default class Relation extends Vue {
 
 <style lang="scss">
 .Relation {
-    stroke: red;
     stroke-width: 2;
 }
 </style>

@@ -7,7 +7,7 @@
         <rect
             :width="src.width"
             :height="src.height"
-            fill="yellow"
+            :fill="color"
             stroke="black"
             stroke-width="2"
         ></rect>
@@ -40,6 +40,11 @@ export default class Kind extends Vue {
 
     @Model("change", { type: Object })
     readonly src!: Graph.Kind;
+
+    get color() {
+        if (this.src.isLink) return "cyan";
+        return "yellow";
+    }
 
     mounted() {
         let textBoxSize = (this.$refs.txt as SVGTextElement).getBBox();
