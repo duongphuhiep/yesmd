@@ -15,8 +15,8 @@ export default {
         {
             id: "user-group",
             type: 0,
-            parent: "group",
-            child: "user",
+            target: "group",
+            source: "user",
         },
     ],
 };

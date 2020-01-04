@@ -1,8 +1,8 @@
 <template>
     <svg
         class="WhiteBoard"
-        width="500"
-        height="500"
+        :width="width"
+        :height="height"
         style="border:1px solid #ccc"
     >
         <Relation :key="r.id" v-for="r in src.Relations" :src="r"></Relation>
@@ -16,15 +16,24 @@ import Kind from "@/components/Kind.vue";
 import Relation from "@/components/Relation.vue";
 import { Graph } from "@/logic/graph";
 import { Utils } from "@/logic/utils";
+import * as d3 from "d3";
 
 @Component({
     components: { Kind, Relation },
 })
 export default class WhiteBoard extends Vue {
-    @Prop(Object) readonly src!: Graph.YModelDetail;
+    @Prop(Object) readonly src!: Graph.YModel;
     //g: Graph.YModelDetail = Graph.buildDetail(this.src);
     /* get g(): Graph.YModelDetail {
         return Graph.buildDetail(this.src);
     } */
+    width: number = 500;
+    height: number = 500;
+    mounted(): void {
+        d3.forceSimulation(this.src.Kinds)
+            //.force("link", d3.forceLink().links())
+            .force("charge", d3.forceManyBody())
+            .force("center", d3.forceCenter(this.width / 2, this.height / 2));
+    }
 }
 </script>

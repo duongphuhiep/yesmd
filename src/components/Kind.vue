@@ -1,7 +1,7 @@
 <template>
     <g
         class="Kind"
-        @mousedown.prevent="startDrag"
+        @mousedown.prevent="dragStart"
         :transform="'translate(' + src.x + ' ' + src.y + ')'"
     >
         <rect
@@ -27,8 +27,6 @@
 </template>
 
 <script lang="ts">
-/*        @mousemove="drag"
-        @mouseup="endDrag"*/
 import { Vue, Prop, Component, Model } from "vue-property-decorator";
 import { Graph } from "@/logic/graph";
 import { Utils } from "@/logic/utils";
@@ -38,7 +36,7 @@ export default class Kind extends Vue {
     readonly PADDING: number = 20;
 
     @Model("change", { type: Object })
-    readonly src!: Graph.KindDetail;
+    readonly src!: Graph.Kind;
 
     mounted() {
         let textBoxSize = (this.$refs.txt as SVGTextElement).getBBox();
@@ -50,14 +48,7 @@ export default class Kind extends Vue {
             textBoxSize.height + this.PADDING,
             this.PADDING
         );
-        this.$emit("change");
     }
-
-    // @Watch("bound")
-    // onBoundChanged(newValue: Utils.Bound): void {
-
-    //     console.log(newValue);
-    // }
 
     //#region Draggable
 
@@ -66,7 +57,7 @@ export default class Kind extends Vue {
     dragOriginPos: Utils.ClientXY | null = null;
     dragRegionDim: Utils.Dimension | null = null;
 
-    startDrag(e: MouseEvent): void {
+    dragStart(e: MouseEvent): void {
         //find the canvas size
         let canvasNode = e.target as Node;
         while (canvasNode && !(canvasNode instanceof SVGSVGElement)) {
@@ -74,15 +65,18 @@ export default class Kind extends Vue {
         }
         let canvas = canvasNode as SVGSVGElement;
         this.dragRegionDim = {
-            width: canvas.clientWidth - this.src.width,
-            height: canvas.clientHeight - this.src.height,
+            width: canvas.clientWidth - (this.src.width || 0),
+            height: canvas.clientHeight - (this.src.height || 0),
         };
 
         this.dragging = true;
         this.dragCursorStartPos = e;
-        this.dragOriginPos = { clientX: this.src.x, clientY: this.src.y };
+        this.dragOriginPos = {
+            clientX: this.src.x || 0,
+            clientY: this.src.y || 0,
+        };
         document.addEventListener("mousemove", this.drag);
-        document.addEventListener("mouseup", this.endDrag, { once: true });
+        document.addEventListener("mouseup", this.drageEnd, { once: true });
     }
 
     drag(e: MouseEvent): void {
@@ -106,13 +100,13 @@ export default class Kind extends Vue {
                 this.PADDING,
                 this.dragRegionDim.height
             );
-            this.$emit("change");
+            //this.$emit("change");
         }
     }
 
-    endDrag(e: MouseEvent): void {
+    drageEnd(e: MouseEvent): void {
         document.removeEventListener("mousemove", this.drag);
-        document.removeEventListener("mouseup", this.endDrag);
+        document.removeEventListener("mouseup", this.drageEnd);
         this.dragging = false;
         this.dragCursorStartPos = null;
     }

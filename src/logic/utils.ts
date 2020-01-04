@@ -19,13 +19,13 @@ export namespace Utils {
         clientY: number;
     }
     export interface Dimension {
-        width: number;
-        height: number;
+        width?: number;
+        height?: number;
     }
 
     export interface Bound extends Dimension {
-        x: number;
-        y: number;
+        x?: number;
+        y?: number;
     }
 
     export interface Line {

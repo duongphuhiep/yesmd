@@ -1,34 +1,22 @@
 import { Utils } from "./utils";
+import * as d3 from "d3";
 
 //#region model
 export namespace Graph {
-    export interface Kind {
+    export interface Kind extends d3.SimulationNodeDatum, Utils.Bound {
         id: string;
         name: string;
         isLink?: boolean;
     }
 
-    export interface Relation {
+    export interface Relation extends d3.SimulationLinkDatum<Kind> {
         id: string;
         type: RelationType;
-        parent: string;
-        child: string;
-    }
-
-    export interface KindDetail extends Kind, Utils.Bound {}
-    export interface RelationDetail extends Relation {
-        parentDetail: KindDetail | undefined;
-        childDetail: KindDetail | undefined;
     }
 
     export interface YModel {
         Kinds: Kind[];
         Relations: Relation[];
-    }
-
-    export interface YModelDetail {
-        Kinds: KindDetail[];
-        Relations: RelationDetail[];
     }
 
     export enum RelationType {
@@ -44,18 +32,27 @@ export namespace Graph {
         Extension = 4,
     }
 
-    export function buildDetail(m: YModel): YModelDetail {
-        let defaultBound: Utils.Bound = { x: 0, y: 0, width: 0, height: 0 };
-        let Kinds: KindDetail[] = m.Kinds.map(k =>
-            Object.assign(k, defaultBound)
-        );
-        let find = (kindId: string) => Kinds.find(k => k.id == kindId);
-        let Relations: RelationDetail[] = m.Relations.map(r =>
-            Object.assign(r, {
-                parentDetail: find(r.parent),
-                childDetail: find(r.child),
-            })
-        );
-        return { Kinds, Relations };
+    /**
+     * fill model with details
+     * - initialize the bound (position and size) of each Kind (with 0)
+     * - convert realtion source, target from id string to real Kind object
+     */
+    export function buildDetail(m: YModel): YModel {
+        let find = (id: string) => m.Kinds.find(k => k.id == id);
+
+        m.Kinds.forEach(k => {
+            k.x = 0;
+            k.y = 0;
+            k.width = 0;
+            k.height = 0;
+        });
+
+        m.Relations.forEach(r => {
+            if (typeof r.source == "string")
+                r.source = find(r.source as string) || r.source;
+            if (typeof r.target == "string")
+                r.target = find(r.target as string) || r.target;
+        });
+        return m;
     }
 }

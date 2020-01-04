@@ -9,18 +9,20 @@ import { Utils } from "@/logic/utils";
 
 @Component
 export default class Relation extends Vue {
-    @Prop(Object) readonly src!: Graph.RelationDetail;
+    @Prop(Object) readonly src!: Graph.Relation;
     get l(): Utils.Line {
-        if (this.src && this.src.childDetail && this.src.parentDetail) {
-            let cw = this.src.childDetail.width / 2;
-            let cx = this.src.childDetail.x + cw;
-            let ch = this.src.childDetail.height / 2;
-            let cy = this.src.childDetail.y + ch;
+        let source = this.src.source as Graph.Kind;
+        let target = this.src.target as Graph.Kind;
 
-            let pw = this.src.parentDetail.width / 2;
-            let px = this.src.parentDetail.x + pw;
-            let ph = this.src.parentDetail.height / 2;
-            let py = this.src.parentDetail.y + ph;
+        if (source && target) {
+            let cw = (source.width || 0) / 2;
+            let ch = (source.height || 0) / 2;
+            let pw = (target.width || 0) / 2;
+            let ph = (target.height || 0) / 2;
+            let cx = (source.x || 0) + cw;
+            let cy = (source.y || 0) + ch;
+            let px = (target.x || 0) + pw;
+            let py = (target.y || 0) + ph;
 
             let dx = Utils.direction(cx, px);
             let dy = Utils.direction(cy, py);
