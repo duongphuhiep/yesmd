@@ -6,8 +6,8 @@
         :x2="l.p2.x"
         :y2="l.p2.y"
         :stroke="color"
-        marker-start="url(#disc)"
-        marker-end="url(#arrow)"
+        :marker-start="`url(#DiscMarker_${color})`"
+        :marker-end="`url(#ArrowMarker_${color})`"
     ></line>
 </template>
 
@@ -22,7 +22,7 @@ export default class Relation extends Vue {
     @Prop(Object) readonly src!: Graph.Relation;
     get color() {
         let source = this.src.source as Graph.Kind;
-        if (source && source.isLink) return "cyan";
+        if (source && source.isLink) return "blue";
         return "red";
     }
     get l(): Utils.Line {

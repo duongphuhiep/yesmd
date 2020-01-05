@@ -6,32 +6,12 @@
         style="border:1px solid #ccc"
     >
         <defs>
-            <!-- arrowhead marker definition -->
-            <marker
-                id="arrow"
-                viewBox="0 0 10 10"
-                refX="5"
-                refY="5"
-                markerWidth="6"
-                markerHeight="6"
-                orient="auto"
-            >
-                <path d="M 0 0 L 10 5 L 0 10 z" />
-            </marker>
-            <!-- circle marker definition -->
-            <marker
-                id="disc"
-                viewBox="0 0 6 6"
-                refX="3"
-                refY="3"
-                markerWidth="6"
-                markerHeight="6"
-                fill="white"
-                stroke="black"
-                orient="auto"
-            >
-                <circle cx="3" cy="3" r="3" />
-            </marker>
+            <ArrowMarker color="red"></ArrowMarker>
+            <DiscMarker color="red"></DiscMarker>
+            <ArrowMarker color="blue"></ArrowMarker>
+            <DiscMarker color="blue"></DiscMarker>
+            <ArrowMarker color="black"></ArrowMarker>
+            <DiscMarker color="black"></DiscMarker>
         </defs>
         <Relation :key="r.id" v-for="r in src.Relations" :src="r"></Relation>
         <Kind
@@ -47,12 +27,14 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import Kind from "@/components/Kind.vue";
 import Relation from "@/components/Relation.vue";
+import ArrowMarker from "@/components/ArrowMarker.vue";
+import DiscMarker from "@/components/DiscMarker.vue";
 import { Graph } from "@/logic/graph";
 import { Utils } from "@/logic/utils";
 import * as d3 from "d3";
 
 @Component({
-    components: { Kind, Relation },
+    components: { Kind, Relation, ArrowMarker, DiscMarker },
 })
 export default class WhiteBoard extends Vue {
     @Prop(Object) readonly src!: Graph.YModel;
