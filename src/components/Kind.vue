@@ -28,8 +28,7 @@
 
 <script lang="ts">
 import { Vue, Prop, Component, Model } from "vue-property-decorator";
-import { Graph } from "@/logic/graph";
-import { Utils } from "@/logic/utils";
+import { Graph, Utils } from "@/logic";
 import * as d3 from "d3";
 
 @Component

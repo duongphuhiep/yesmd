@@ -3,7 +3,7 @@ import { Utils } from "@/logic/utils";
 
 describe("Graph Test", () => {
     it("min distant", async () => {
-        const g: Graph.YModel = (await import("tests/data-samples/simpleModel"))
+        const g: Graph.YModel = (await import("tests/data-samples/simple"))
             .default;
         const k1 = g.Kinds[0];
         const k2 = g.Kinds[1];

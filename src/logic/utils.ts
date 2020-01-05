@@ -1,5 +1,19 @@
 //#region utils
 export namespace Utils {
+    export function diagonalLength(d: Utils.Dimension): number {
+        return Math.sqrt((d.width || 0) ** 2 + (d.height || 0) ** 2);
+    }
+    /**
+     * Sanp to grid. For example if the grid is 10 and the canvas size is 400 then
+     * - round(32, 10, 400) = 30 (32 is snap to 30 in the grid)
+     * - round(36, 10, 400) = 40 (36 is snap to 40 in the grid)
+     * - round(566, 10, 400) = 40 (566 is outside the canvans size => snap it to the canvas size)
+     * @export
+     * @param {number} p is the current number to round
+     * @param {number} [n=10] grid size
+     * @param {(number | null)} [max=null] p can not exceed
+     * @returns {number}
+     */
     export function round(
         p: number,
         n = 10,
@@ -11,11 +25,15 @@ export namespace Utils {
         return res;
     }
 
-    export function direction(from: number, to: number): number {
+    /*     export function direction(from: number, to: number): number {
         if (from == to) return 0;
         return from < to ? 1 : -1;
-    }
+    } */
 
+    /**
+     * @param b bound to convert
+     * @param margin to add
+     */
     function convertBoundToRectangleWithMargin(
         b: Bound,
         margin: number

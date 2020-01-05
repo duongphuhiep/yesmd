@@ -29,8 +29,7 @@ import Kind from "@/components/Kind.vue";
 import Relation from "@/components/Relation.vue";
 import ArrowMarker from "@/components/ArrowMarker.vue";
 import DiscMarker from "@/components/DiscMarker.vue";
-import { Graph } from "@/logic/graph";
-import { Utils } from "@/logic/utils";
+import { Graph, Utils } from "@/logic";
 import * as d3 from "d3";
 
 @Component({

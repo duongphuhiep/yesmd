@@ -13,8 +13,7 @@
 
 <script lang="ts">
 import { Vue, Prop, Component } from "vue-property-decorator";
-import { Graph } from "@/logic/graph";
-import { Utils } from "@/logic/utils";
+import { Graph, Utils } from "@/logic";
 
 @Component
 export default class Relation extends Vue {

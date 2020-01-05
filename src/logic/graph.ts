@@ -56,11 +56,9 @@ export namespace Graph {
         return m;
     }
 
-    function diagonalLength(d: Utils.Dimension): number {
-        return Math.sqrt((d.width || 0) ** 2 + (d.height || 0) ** 2);
-    }
-
     export function minDistant(source: Kind, target: Kind): number {
-        return (diagonalLength(source) + diagonalLength(target)) / 2;
+        return (
+            (Utils.diagonalLength(source) + Utils.diagonalLength(target)) / 2
+        );
     }
 }
