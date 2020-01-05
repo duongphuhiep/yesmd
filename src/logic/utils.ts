@@ -1,3 +1,7 @@
+export namespace Conf {
+    export const GRID: number = 10;
+    export const KIND_PADDING: number = 20;
+}
 //#region utils
 export namespace Utils {
     export function diagonalLength(d: Utils.Dimension): number {
@@ -16,7 +20,7 @@ export namespace Utils {
      */
     export function round(
         p: number,
-        n = 10,
+        n = Conf.GRID,
         max: number | null = null
     ): number {
         let res = p % n < n / 2 ? p - (p % n) : p + n - (p % n);

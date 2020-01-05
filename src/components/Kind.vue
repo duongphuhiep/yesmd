@@ -28,13 +28,11 @@
 
 <script lang="ts">
 import { Vue, Prop, Component, Model } from "vue-property-decorator";
-import { Graph, Utils } from "@/logic";
+import { Graph, Utils, Conf } from "@/logic";
 import * as d3 from "d3";
 
 @Component
 export default class Kind extends Vue {
-    readonly PADDING: number = 20;
-
     @Prop(Object) readonly simulation!: d3.Simulation<Graph.Kind, undefined>;
 
     @Model("change", { type: Object })
@@ -48,12 +46,12 @@ export default class Kind extends Vue {
     mounted() {
         let textBoxSize = (this.$refs.txt as SVGTextElement).getBBox();
         this.src.width = Utils.round(
-            textBoxSize.width + this.PADDING,
-            this.PADDING
+            textBoxSize.width + Conf.KIND_PADDING,
+            Conf.KIND_PADDING
         );
         this.src.height = Utils.round(
-            textBoxSize.height + this.PADDING,
-            this.PADDING
+            textBoxSize.height + Conf.KIND_PADDING,
+            Conf.KIND_PADDING
         );
     }
 
@@ -106,14 +104,14 @@ export default class Kind extends Vue {
                 this.dragOriginPos.clientX +
                     e.clientX -
                     this.dragCursorStartPos.clientX,
-                this.PADDING,
+                Conf.GRID,
                 this.dragRegionDim.width
             );
             let y = Utils.round(
                 this.dragOriginPos.clientY +
                     e.clientY -
                     this.dragCursorStartPos.clientY,
-                this.PADDING,
+                Conf.GRID,
                 this.dragRegionDim.height
             );
             if (this.simulation) {
