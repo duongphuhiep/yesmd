@@ -1,5 +1,6 @@
 import { Utils, Conf } from "./utils";
 import * as d3 from "d3";
+import * as cola from "webcola";
 
 //#region model
 export namespace Graph {
@@ -9,14 +10,32 @@ export namespace Graph {
         isLink?: boolean;
     }
 
+    export interface KindXY extends Kind, cola.Node {
+        x: number;
+        y: number;
+    }
+
     export interface Relation extends d3.SimulationLinkDatum<Kind> {
         id: string;
         type: RelationType;
     }
 
+    export interface RelationXY
+        extends Relation,
+            cola.Link<KindXY>,
+            d3.SimulationLinkDatum<KindXY> {
+        source: KindXY;
+        target: KindXY;
+    }
+
     export interface YModel {
         Kinds: Kind[];
         Relations: Relation[];
+    }
+
+    export interface YModelXY extends YModel {
+        Kinds: KindXY[];
+        Relations: RelationXY[];
     }
 
     export enum RelationType {
@@ -37,7 +56,7 @@ export namespace Graph {
      * - initialize the bound (position and size) of each Kind (with 0)
      * - convert realtion source, target from id string to real Kind object
      */
-    export function buildDetail(m: YModel): YModel {
+    export function buildDetail(m: YModel): YModelXY {
         let find = (id: string) => m.Kinds.find(k => k.id == id);
 
         m.Kinds.forEach(k => {
@@ -53,7 +72,7 @@ export namespace Graph {
             if (typeof r.target == "string")
                 r.target = find(r.target as string) || r.target;
         });
-        return m;
+        return <YModelXY>m;
     }
 
     export function minDistant(source: Kind, target: Kind): number {
@@ -62,10 +81,11 @@ export namespace Graph {
         );
     }
 
-    export function buildD3ForceSimulation(
+    export type D3FLayout = d3.Simulation<Kind, undefined> | null;
+    export function buildD3FLayout(
         g: YModel,
         canvasSize: Utils.Dimension
-    ): d3.Simulation<Kind, undefined> | null {
+    ): D3FLayout {
         if (!g || !canvasSize.width || !canvasSize.height) return null;
         const resu = d3
             .forceSimulation(g.Kinds)
@@ -103,5 +123,21 @@ export namespace Graph {
         });
 
         return resu;
+    }
+
+    export type ColaFLayout = cola.Layout | null;
+    export function buildColaFLayout(
+        g: YModelXY,
+        canvasSize: Utils.Dimension
+    ): ColaFLayout {
+        if (!g || !canvasSize.width || !canvasSize.height) return null;
+        const layout = new cola.Layout();
+        layout
+            .size([canvasSize.width || 0, canvasSize.height || 0])
+            .nodes(g.Kinds)
+            .links(g.Relations)
+            .jaccardLinkLengths(200, 0.7)
+            .avoidOverlaps(true);
+        return layout;
     }
 }

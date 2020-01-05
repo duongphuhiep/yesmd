@@ -3,5 +3,8 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true
     },
-    "gitlens.codeLens.enabled": false
+    "gitlens.codeLens.enabled": false,
+    "markdownlint.ignore": [
+        "*"
+    ]
 }

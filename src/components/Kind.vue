@@ -29,11 +29,11 @@
 <script lang="ts">
 import { Vue, Prop, Component, Model } from "vue-property-decorator";
 import { Graph, Utils, Conf } from "@/logic";
-import * as d3 from "d3";
 
 @Component
 export default class Kind extends Vue {
-    @Prop(Object) readonly simulation!: d3.Simulation<Graph.Kind, undefined>;
+    @Prop(Object) readonly d3flayout!: Graph.D3FLayout;
+    @Prop(Object) readonly colasimulation!: Graph.ColaFLayout;
 
     @Model("change", { type: Object })
     readonly src!: Graph.Kind;
@@ -68,7 +68,7 @@ export default class Kind extends Vue {
         while (canvasNode && !(canvasNode instanceof SVGSVGElement)) {
             canvasNode = canvasNode.parentNode as Node;
         }
-        let canvas = canvasNode as SVGSVGElement;
+        const canvas = canvasNode as SVGSVGElement;
         this.dragRegionDim = {
             width: canvas.clientWidth - (this.src.width || 0),
             height: canvas.clientHeight - (this.src.height || 0),
@@ -81,8 +81,8 @@ export default class Kind extends Vue {
             clientY: this.src.y || 0,
         };
 
-        if (this.simulation) {
-            this.simulation.alphaTarget(0.3).restart();
+        if (this.d3flayout) {
+            this.d3flayout.alphaTarget(0.3).restart();
         }
         if (this.src) {
             this.src.fx = this.src.x;
@@ -100,21 +100,21 @@ export default class Kind extends Vue {
             this.dragOriginPos &&
             this.dragRegionDim
         ) {
-            let x = Utils.round(
+            const x = Utils.round(
                 this.dragOriginPos.clientX +
                     e.clientX -
                     this.dragCursorStartPos.clientX,
                 Conf.GRID,
                 this.dragRegionDim.width
             );
-            let y = Utils.round(
+            const y = Utils.round(
                 this.dragOriginPos.clientY +
                     e.clientY -
                     this.dragCursorStartPos.clientY,
                 Conf.GRID,
                 this.dragRegionDim.height
             );
-            if (this.simulation) {
+            if (this.d3flayout) {
                 this.src.fx = x;
                 this.src.fy = y;
             } else {
@@ -130,8 +130,8 @@ export default class Kind extends Vue {
         this.dragging = false;
         this.dragCursorStartPos = null;
 
-        if (this.simulation) {
-            this.simulation.alphaTarget(0);
+        if (this.d3flayout) {
+            this.d3flayout.alphaTarget(0);
             this.src.fx = null;
             this.src.fy = null;
         }

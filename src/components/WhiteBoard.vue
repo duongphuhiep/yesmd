@@ -18,7 +18,8 @@
             :key="k.id"
             v-for="k in src.Kinds"
             :src="k"
-            :simulation="simulation"
+            :d3flayout="d3flayout"
+            :colaflayout="colaflayout"
         ></Kind>
     </svg>
 </template>
@@ -30,13 +31,12 @@ import Relation from "@/components/Relation.vue";
 import ArrowMarker from "@/components/ArrowMarker.vue";
 import DiscMarker from "@/components/DiscMarker.vue";
 import { Graph, Utils } from "@/logic";
-import * as d3 from "d3";
 
 @Component({
     components: { Kind, Relation, ArrowMarker, DiscMarker },
 })
 export default class WhiteBoard extends Vue {
-    @Prop(Object) readonly src!: Graph.YModel;
+    @Prop(Object) readonly src!: Graph.YModelXY;
     //g: Graph.YModelDetail = Graph.buildDetail(this.src);
     /* get g(): Graph.YModelDetail {
         return Graph.buildDetail(this.src);
@@ -44,17 +44,29 @@ export default class WhiteBoard extends Vue {
     width: number = 1000;
     height: number = 800;
 
-    simulation = Graph.buildD3ForceSimulation(this.src, {
-        width: this.width,
-        height: this.height,
-    });
-    mounted(): void {
-        if (this.simulation != null) this.simulation.stop();
-        this.simulation = Graph.buildD3ForceSimulation(this.src, {
+    d3flayout: Graph.D3FLayout = null;
+    colaflayout: Graph.ColaFLayout = null;
+
+    initD3FLayout() {
+        if (this.d3flayout != null) this.d3flayout.stop();
+        this.d3flayout = Graph.buildD3FLayout(this.src, {
             width: this.width,
             height: this.height,
         });
-        if (this.simulation != null) this.simulation.restart();
+        if (this.d3flayout != null) this.d3flayout.restart();
+    }
+
+    initColaFLayout() {
+        if (this.colaflayout != null) this.colaflayout.stop();
+        this.colaflayout = Graph.buildColaFLayout(this.src, {
+            width: this.width,
+            height: this.height,
+        });
+        if (this.colaflayout != null) this.colaflayout.start(30);
+    }
+
+    mounted(): void {
+        this.initColaFLayout();
     }
 }
 </script>
