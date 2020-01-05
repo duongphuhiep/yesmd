@@ -5,6 +5,34 @@
         :height="height"
         style="border:1px solid #ccc"
     >
+        <defs>
+            <!-- arrowhead marker definition -->
+            <marker
+                id="arrow"
+                viewBox="0 0 10 10"
+                refX="5"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto"
+            >
+                <path d="M 0 0 L 10 5 L 0 10 z" />
+            </marker>
+            <!-- circle marker definition -->
+            <marker
+                id="disc"
+                viewBox="0 0 6 6"
+                refX="3"
+                refY="3"
+                markerWidth="6"
+                markerHeight="6"
+                fill="white"
+                stroke="black"
+                orient="auto"
+            >
+                <circle cx="3" cy="3" r="3" />
+            </marker>
+        </defs>
         <Relation :key="r.id" v-for="r in src.Relations" :src="r"></Relation>
         <Kind
             :key="k.id"
@@ -34,9 +62,24 @@ export default class WhiteBoard extends Vue {
     } */
     width: number = 1000;
     height: number = 800;
-    get simulation() {
-        return d3
+
+    simulation: d3.Simulation<Graph.Kind, undefined> = d3
+        .forceSimulation(this.src.Kinds)
+        .force("center", d3.forceCenter(this.width / 2, this.height / 2))
+        .force("link", d3.forceLink(this.src.Relations))
+        .force(
+            "charge",
+            d3
+                .forceManyBody()
+                .distanceMin(40)
+                .distanceMax(this.width)
+        )
+        .force("collide", d3.forceCollide(100));
+    mounted(): void {
+        this.simulation.stop();
+        this.simulation = d3
             .forceSimulation(this.src.Kinds)
+            .force("center", d3.forceCenter(this.width / 2, this.height / 2))
             .force(
                 "link",
                 d3.forceLink(this.src.Relations).distance(l => {
@@ -53,11 +96,14 @@ export default class WhiteBoard extends Vue {
                 "charge",
                 d3
                     .forceManyBody()
-                    .distanceMin(40)
+                    .strength(-120)
+                    .distanceMin(120)
                     .distanceMax(this.width)
             )
-            .force("center", d3.forceCenter(this.width / 2, this.height / 2));
+            .force("collide", d3.forceCollide(100));
+
+        //this.simulation.tick(4000);
+        this.simulation.restart();
     }
-    mounted(): void {}
 }
 </script>

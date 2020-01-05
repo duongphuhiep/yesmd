@@ -117,8 +117,13 @@ export default class Kind extends Vue {
                 this.PADDING,
                 this.dragRegionDim.height
             );
-            this.src.fx = x;
-            this.src.fy = y;
+            if (this.simulation) {
+                this.src.fx = x;
+                this.src.fy = y;
+            } else {
+                this.src.x = x;
+                this.src.y = y;
+            }
         }
     }
 
@@ -128,9 +133,11 @@ export default class Kind extends Vue {
         this.dragging = false;
         this.dragCursorStartPos = null;
 
-        this.simulation.alphaTarget(0);
-        this.src.fx = null;
-        this.src.fy = null;
+        if (this.simulation) {
+            this.simulation.alphaTarget(0);
+            this.src.fx = null;
+            this.src.fy = null;
+        }
     }
 
     //#endregion
