@@ -102,6 +102,13 @@ export default class WhiteBoard extends Vue {
             )
             .force("collide", d3.forceCollide(100));
 
+        this.simulation.on("end", () => {
+            this.src.Kinds.forEach(k => {
+                k.x = Utils.round(k.x || 0, 10, this.width);
+                k.y = Utils.round(k.y || 0, 10, this.width);
+            });
+        });
+
         //this.simulation.tick(4000);
         this.simulation.restart();
     }
