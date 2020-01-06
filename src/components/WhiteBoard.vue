@@ -31,6 +31,7 @@ import Relation from "@/components/Relation.vue";
 import ArrowMarker from "@/components/ArrowMarker.vue";
 import DiscMarker from "@/components/DiscMarker.vue";
 import { Graph, Utils } from "@/logic";
+import * as cola from "webcola";
 
 @Component({
     components: { Kind, Relation, ArrowMarker, DiscMarker },
@@ -62,7 +63,9 @@ export default class WhiteBoard extends Vue {
             width: this.width,
             height: this.height,
         });
-        if (this.colaflayout != null) this.colaflayout.start(30);
+        if (this.colaflayout != null) {
+            this.colaflayout.start(30);
+        }
     }
 
     mounted(): void {

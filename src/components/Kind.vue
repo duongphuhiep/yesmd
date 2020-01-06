@@ -29,14 +29,15 @@
 <script lang="ts">
 import { Vue, Prop, Component, Model } from "vue-property-decorator";
 import { Graph, Utils, Conf } from "@/logic";
+import * as cola from "webcola";
 
 @Component
 export default class Kind extends Vue {
-    @Prop(Object) readonly d3flayout!: Graph.D3FLayout;
-    @Prop(Object) readonly colasimulation!: Graph.ColaFLayout;
+    @Prop(Object) readonly d3flayout: Graph.D3FLayout = null;
+    @Prop(Object) readonly colaflayout: Graph.ColaFLayout = null;
 
     @Model("change", { type: Object })
-    readonly src!: Graph.Kind;
+    readonly src!: Graph.KindXY;
 
     get color() {
         if (this.src.isLink) return "cyan";
@@ -83,10 +84,13 @@ export default class Kind extends Vue {
 
         if (this.d3flayout) {
             this.d3flayout.alphaTarget(0.3).restart();
+            if (this.src) {
+                this.src.fx = this.src.x;
+                this.src.fy = this.src.y;
+            }
         }
-        if (this.src) {
-            this.src.fx = this.src.x;
-            this.src.fy = this.src.y;
+        if (this.colaflayout) {
+            cola.Layout.dragStart(this.src);
         }
 
         document.addEventListener("mousemove", this.drag);
@@ -120,6 +124,11 @@ export default class Kind extends Vue {
             } else {
                 this.src.x = x;
                 this.src.y = y;
+
+                if (this.colaflayout) {
+                    this.colaflayout.start(10);
+                    cola.Layout.drag(this.src, { x, y });
+                }
             }
         }
     }
@@ -134,6 +143,9 @@ export default class Kind extends Vue {
             this.d3flayout.alphaTarget(0);
             this.src.fx = null;
             this.src.fy = null;
+        }
+        if (this.colaflayout) {
+            cola.Layout.dragEnd(this.src);
         }
     }
 

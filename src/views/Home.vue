@@ -9,7 +9,7 @@ import { Vue, Component } from "vue-property-decorator";
 import WhiteBoard from "@/components/WhiteBoard.vue";
 import { Graph } from "@/logic/graph";
 
-import fakeData from "@/../tests/data-samples/rbac";
+import fakeData from "@/../tests/data-samples/simple";
 
 @Component({
     components: { WhiteBoard },
