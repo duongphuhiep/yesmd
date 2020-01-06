@@ -90,6 +90,7 @@ export default class Kind extends Vue {
             }
         }
         if (this.colaflayout) {
+            this.colaflayout.alpha(0.3).start();
             cola.Layout.dragStart(this.src);
         }
 
@@ -145,6 +146,7 @@ export default class Kind extends Vue {
             this.src.fy = null;
         }
         if (this.colaflayout) {
+            this.colaflayout.alpha(0);
             cola.Layout.dragEnd(this.src);
         }
     }

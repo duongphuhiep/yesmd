@@ -125,13 +125,23 @@ export namespace Graph {
         return resu;
     }
 
-    export type ColaFLayout = cola.Layout | null;
+    export type ColaFLayout = ColaFLayoutExt | null;
+
+    class ColaFLayoutExt extends cola.Layout {
+        protected kick(): void {
+            const timer = d3.timer(() => {
+                if (this.tick()) {
+                    timer.stop();
+                }
+            });
+        }
+    }
     export function buildColaFLayout(
         g: YModelXY,
         canvasSize: Utils.Dimension
-    ): ColaFLayout {
+    ): ColaFLayout | null {
         if (!g || !canvasSize.width || !canvasSize.height) return null;
-        const layout = new cola.Layout();
+        const layout = new ColaFLayoutExt();
         layout
             .size([canvasSize.width || 0, canvasSize.height || 0])
             .nodes(g.Kinds)
@@ -140,4 +150,19 @@ export namespace Graph {
             .avoidOverlaps(true);
         return layout;
     }
+
+    /* function ativateAnim(){
+        
+      function animate () {
+        if (TWEEN.update()) {
+          requestAnimationFrame(animate)
+        }
+      }
+
+      new TWEEN.Tween(this.tweenedColor)
+        .to(this.color, 750)
+        .start()
+
+      animate()
+    } */
 }
