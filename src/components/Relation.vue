@@ -25,8 +25,8 @@ export default class Relation extends Vue {
         return "red";
     }
     get l(): Utils.Line {
-        const source = this.src.source as Utils.Bound;
-        const target = this.src.target as Utils.Bound;
+        const source = this.src.source as Utils.CentralBound;
+        const target = this.src.target as Utils.CentralBound;
         let resu: Utils.Line | null = null;
         if (source && target) {
             resu = Utils.getLinkLine(source, target, this.MARGIN);

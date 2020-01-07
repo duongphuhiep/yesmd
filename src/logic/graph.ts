@@ -4,7 +4,7 @@ import * as cola from "webcola";
 
 //#region model
 export namespace Graph {
-    export interface Kind extends d3.SimulationNodeDatum, Utils.Bound {
+    export interface Kind extends d3.SimulationNodeDatum, Utils.CentralBound {
         id: string;
         name: string;
         isLink?: boolean;
@@ -146,7 +146,7 @@ export namespace Graph {
             .size([canvasSize.width || 0, canvasSize.height || 0])
             .nodes(g.Kinds)
             .links(g.Relations)
-            .jaccardLinkLengths(200, 0.7)
+            .jaccardLinkLengths(150, 0.7)
             .avoidOverlaps(true);
         return layout;
     }

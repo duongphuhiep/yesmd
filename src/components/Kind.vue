@@ -2,7 +2,7 @@
     <g
         class="Kind"
         @mousedown.prevent="dragStart"
-        :transform="'translate(' + src.x + ' ' + src.y + ')'"
+        :transform="`translate(${left},${top})`"
     >
         <rect
             :width="src.width"
@@ -39,9 +39,23 @@ export default class Kind extends Vue {
     @Model("change", { type: Object })
     readonly src!: Graph.KindXY;
 
-    get color() {
+    get color(): string {
         if (this.src.isLink) return "cyan";
         return "yellow";
+    }
+
+    get left(): number {
+        if (this.src.width && this.src.x) {
+            return this.src.x - this.src.width / 2;
+        }
+        return 0;
+    }
+
+    get top(): number {
+        if (this.src.height && this.src.y) {
+            return this.src.y - this.src.height / 2;
+        }
+        return 0;
     }
 
     mounted() {

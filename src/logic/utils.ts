@@ -1,6 +1,7 @@
 export namespace Conf {
-    export const GRID: number = 10;
-    export const KIND_PADDING: number = 20;
+    const HALF_GRID: number = 5;
+    export const GRID: number = HALF_GRID * 2;
+    export const KIND_PADDING: number = GRID * 2;
 }
 //#region utils
 export namespace Utils {
@@ -39,18 +40,15 @@ export namespace Utils {
      * @param margin to add
      */
     function convertBoundToRectangleWithMargin(
-        b: Bound,
+        b: CentralBound,
         margin: number
     ): Rectangle {
         return {
-            x: (b.x || 0) - margin,
-            y: (b.y || 0) - margin,
+            x: (b.x || 0) - (b.width || 0) / 2 - margin,
+            y: (b.y || 0) - (b.height || 0) / 2 - margin,
             width: (b.width || 0) + margin * 2,
             height: (b.height || 0) + margin * 2,
         };
-    }
-    function getCentralPoint(r: Rectangle): Point {
-        return { x: r.x + r.width / 2, y: r.y + r.height / 2 };
     }
     function getLineIntersection(a: Line, b: Line): Point | null {
         const s1_x = a.p2.x - a.p1.x;
@@ -94,14 +92,14 @@ export namespace Utils {
      * @param b
      */
     export function getLinkLine(
-        a: Bound,
-        b: Bound,
+        a: CentralBound,
+        b: CentralBound,
         margin: number
     ): Line | null {
         const ar = convertBoundToRectangleWithMargin(a, 0);
         const br = convertBoundToRectangleWithMargin(b, margin);
-        const p1 = getCentralPoint(ar);
-        const p2 = getCentralPoint(br);
+        const p1: Point = { x: a.x || 0, y: a.y || 0 };
+        const p2: Point = { x: b.x || 0, y: b.y || 0 };
 
         const baseLine: Line = { p1, p2 };
 
@@ -119,9 +117,9 @@ export namespace Utils {
         height?: number;
     }
 
-    export interface Bound extends Dimension {
-        x?: number;
-        y?: number;
+    export interface CentralBound extends Dimension {
+        x?: number; //centerX
+        y?: number; //centerY
     }
 
     export interface Line {
