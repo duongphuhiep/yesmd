@@ -9,7 +9,7 @@
         fill="white"
         :stroke="color"
     >
-        <circle cx="3" cy="3" r="3" />
+        <circle cx="3" cy="3" r="2" />
     </marker>
 </template>
 

@@ -75,7 +75,10 @@ export namespace Graph {
         return <YModelXY>m;
     }
 
-    export function minDistant(source: Kind, target: Kind): number {
+    export function minDistant(
+        source: Utils.Dimension,
+        target: Utils.Dimension
+    ): number {
         return (
             (Utils.diagonalLength(source) + Utils.diagonalLength(target)) / 2
         );
@@ -146,23 +149,14 @@ export namespace Graph {
             .size([canvasSize.width || 0, canvasSize.height || 0])
             .nodes(g.Kinds)
             .links(g.Relations)
-            .jaccardLinkLengths(150, 0.7)
+            .linkDistance(l => {
+                return minDistant(
+                    <Utils.Dimension>l.source,
+                    <Utils.Dimension>l.target
+                ) + Conf.GRID*3;
+            })
+            //.jaccardLinkLengths(Conf.GRID*2, 0.7)
             .avoidOverlaps(true);
         return layout;
     }
-
-    /* function ativateAnim(){
-        
-      function animate () {
-        if (TWEEN.update()) {
-          requestAnimationFrame(animate)
-        }
-      }
-
-      new TWEEN.Tween(this.tweenedColor)
-        .to(this.color, 750)
-        .start()
-
-      animate()
-    } */
 }
