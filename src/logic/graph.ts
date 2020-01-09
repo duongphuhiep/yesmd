@@ -6,7 +6,7 @@ import * as cola from "webcola";
 export namespace Graph {
     export interface Kind extends d3.SimulationNodeDatum, Utils.CentralBound {
         id: string;
-        name: string;
+        name?: string;
         isLink?: boolean;
     }
 
@@ -17,7 +17,7 @@ export namespace Graph {
 
     export interface Relation extends d3.SimulationLinkDatum<Kind> {
         id: string;
-        type: RelationType;
+        type?: RelationType;
     }
 
     export interface RelationXY
@@ -26,6 +26,17 @@ export namespace Graph {
             d3.SimulationLinkDatum<KindXY> {
         source: KindXY;
         target: KindXY;
+    }
+
+    export interface YModelCompact {
+        /**
+         * in compact format: the string can describe a Kind which is the label and id of the kind
+         */
+        Kinds: (Kind | KindXY | string)[];
+        /**
+         * in compact format: a string can also refered to a relation. For example "source:target:1". 1 is the type, if not defnied then it will be 0 (normal type)
+         */
+        Relations: (Relation | RelationXY | string)[];
     }
 
     export interface YModel {
@@ -64,15 +75,89 @@ export namespace Graph {
             k.y = 0;
             k.width = 0;
             k.height = 0;
+            if (!k.name) {
+                k.name = k.id;
+            }
         });
 
         m.Relations.forEach(r => {
-            if (typeof r.source == "string")
+            if (typeof r.source === "string")
                 r.source = find(r.source as string) || r.source;
-            if (typeof r.target == "string")
+            if (typeof r.target === "string")
                 r.target = find(r.target as string) || r.target;
         });
         return <YModelXY>m;
+    }
+
+    export function buildDetailFromCompact(m: YModelCompact): YModelXY {
+        const Kinds: KindXY[] = m.Kinds.map(k => {
+            if (typeof k === "string") {
+                if (k.length > 2 && k.startsWith("-") && k.endsWith("-")) {
+                    k = k.substr(1, k.length - 2);
+                    return {
+                        x: 0,
+                        y: 0,
+                        width: 0,
+                        height: 0,
+                        id: k,
+                        name: k,
+                        isLink: true,
+                    };
+                }
+                return {
+                    x: 0,
+                    y: 0,
+                    width: 0,
+                    height: 0,
+                    id: k,
+                    name: k,
+                };
+            } else {
+                k.x = 0;
+                k.y = 0;
+                k.width = 0;
+                k.height = 0;
+                if (!k.name) {
+                    k.name = k.id;
+                }
+                return <KindXY>k;
+            }
+        });
+        const find = (id: string) => Kinds.find(k => (<KindXY>k).id == id);
+        const Relations: RelationXY[] = [];
+
+        for (let r of m.Relations) {
+            if (typeof r === "string") {
+                //User:Group:1
+                const t = r.split(":");
+                const l = t.length;
+                const source = l > 0 ? find(t[0].trim()) : null;
+                const target = l > 1 ? find(t[1].trim()) : null;
+                if (source && target) {
+                    Relations.push({
+                        id: r,
+                        source,
+                        target,
+                        type:
+                            l > 2
+                                ? <RelationType>Number.parseInt(t[2].trim())
+                                : RelationType.Normal,
+                    });
+                }
+            } else {
+                let source: KindXY | undefined = undefined;
+                let target: KindXY | undefined = undefined;
+                if (r.source && typeof r.source === "string")
+                    source = find(r.source);
+                if (typeof r.target === "string") target = find(r.target);
+                if (source && target) {
+                    r.source = source;
+                    r.target = target;
+                    Relations.push(<RelationXY>r);
+                }
+            }
+        }
+        return { Kinds, Relations };
     }
 
     export function minDistant(
@@ -150,10 +235,13 @@ export namespace Graph {
             .nodes(g.Kinds)
             .links(g.Relations)
             .linkDistance(l => {
-                return minDistant(
-                    <Utils.Dimension>l.source,
-                    <Utils.Dimension>l.target
-                ) + Conf.GRID*3;
+                return (
+                    minDistant(
+                        <Utils.Dimension>l.source,
+                        <Utils.Dimension>l.target
+                    ) +
+                    Conf.GRID * 3
+                );
             })
             //.jaccardLinkLengths(Conf.GRID*2, 0.7)
             .avoidOverlaps(true);

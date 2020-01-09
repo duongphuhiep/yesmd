@@ -1,5 +1,5 @@
 export namespace Conf {
-    const HALF_GRID: number = 5;
+    export const HALF_GRID: number = 5;
     export const GRID: number = HALF_GRID * 2;
     export const KIND_PADDING: number = GRID * 2;
 }

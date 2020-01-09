@@ -12,9 +12,38 @@ describe("Graph Test", () => {
         expect(Graph.minDistant(k1, k2)).toEqual(250);
     });
 
-    it("compute line linked 2 bounds", () => {
-        const a: Utils.Rectangle = { x: 12, y: 10, width: 8, height: 4 };
-        const b: Utils.Rectangle = { x: 0, y: 0, width: 10, height: 4 };
-        const l = Utils.getLinkLine(a, b, 0);
+    it("compute graph detail", () => {
+        const g1: Graph.YModelCompact = {
+            Kinds: ["k0", "k1", "-k2-", "k3", { id: "k4" }, "k5"],
+            Relations: [
+                "k0:k1",
+                "k2:k1",
+                "k2:k3",
+                { id: "k2:k4", source: "k2", target: "k4" },
+                "k5:k4:4"
+            ],
+        };
+
+        const gg1 = Graph.buildDetailFromCompact(g1);
+
+        //kind object created
+        expect(gg1.Kinds[0].id).toEqual("k0");
+
+        //basic relation object
+        expect(gg1.Relations[0].source).toEqual(gg1.Kinds[0]);
+        expect(gg1.Relations[0].target).toEqual(gg1.Kinds[1]);
+        expect(gg1.Relations[0].type).toEqual(Graph.RelationType.Normal);
+
+        //link kind shortcut
+        expect(gg1.Kinds[2].id).toEqual("k2");
+        expect(gg1.Kinds[2].isLink).toBe(true);
+        expect(gg1.Relations[3].source).toEqual(gg1.Kinds[2]);
+        expect(gg1.Relations[3].target).toEqual(gg1.Kinds[4]);
+
+        //name is id by default if not defined
+        expect(gg1.Kinds[4].name).toEqual("k4");
+        
+        //extension link
+        expect(gg1.Relations[4].type).toEqual(Graph.RelationType.Extension);
     });
 });

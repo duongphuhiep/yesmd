@@ -13,13 +13,14 @@
 
 <script lang="ts">
 import { Vue, Prop, Component } from "vue-property-decorator";
-import { Graph, Utils } from "@/logic";
+import { Graph, Utils, Conf } from "@/logic";
+import { type } from "os";
 
 @Component
 export default class Relation extends Vue {
-    readonly MARGIN: number = 8;
     @Prop(Object) readonly src!: Graph.Relation;
-    get color() {
+    get color(): string {
+        if (this.src.type == Graph.RelationType.Extension) return "black";
         let source = this.src.source as Graph.Kind;
         if (source && source.isLink) return "blue";
         return "red";
@@ -29,7 +30,7 @@ export default class Relation extends Vue {
         const target = this.src.target as Utils.CentralBound;
         let resu: Utils.Line | null = null;
         if (source && target) {
-            resu = Utils.getLinkLine(source, target, this.MARGIN);
+            resu = Utils.getLinkLine(source, target, Conf.HALF_GRID);
         }
         return resu || { p1: { x: 0, y: 0 }, p2: { x: 0, y: 0 } };
     }
