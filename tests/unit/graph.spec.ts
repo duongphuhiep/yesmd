@@ -20,7 +20,8 @@ describe("Graph Test", () => {
                 "k2:k1",
                 "k2:k3",
                 { id: "k2:k4", source: "k2", target: "k4" },
-                "k5:k4:4"
+                "k5:k4:4",
+                "k6:k5:2"
             ],
         };
 
@@ -45,5 +46,11 @@ describe("Graph Test", () => {
         
         //extension link
         expect(gg1.Relations[4].type).toEqual(Graph.RelationType.Extension);
+        
+        //create new kind from the relation
+        expect(gg1.Kinds[6].id).toEqual("k6");
+        expect(gg1.Relations[5].source).toEqual(gg1.Kinds[6]);
+        expect(gg1.Relations[5].target).toEqual(gg1.Kinds[5]);
+        expect(gg1.Relations[5].type).toEqual(Graph.RelationType.UniqueOptional);
     });
 });

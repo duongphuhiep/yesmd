@@ -89,29 +89,25 @@ export namespace Graph {
         return <YModelXY>m;
     }
 
+    function createKind(s: string): KindXY {
+        return {
+            x: 0,
+            y: 0,
+            width: 0,
+            height: 0,
+            id: s,
+            name: s,
+        };
+    }
+
     export function buildDetailFromCompact(m: YModelCompact): YModelXY {
         const Kinds: KindXY[] = m.Kinds.map(k => {
             if (typeof k === "string") {
                 if (k.length > 2 && k.startsWith("-") && k.endsWith("-")) {
                     k = k.substr(1, k.length - 2);
-                    return {
-                        x: 0,
-                        y: 0,
-                        width: 0,
-                        height: 0,
-                        id: k,
-                        name: k,
-                        isLink: true,
-                    };
+                    return Object.assign({ isLink: true }, createKind(k));
                 }
-                return {
-                    x: 0,
-                    y: 0,
-                    width: 0,
-                    height: 0,
-                    id: k,
-                    name: k,
-                };
+                return createKind(k);
             } else {
                 k.x = 0;
                 k.y = 0;
@@ -123,7 +119,15 @@ export namespace Graph {
                 return <KindXY>k;
             }
         });
-        const find = (id: string) => Kinds.find(k => (<KindXY>k).id == id);
+
+        function findOrCreateKind(id: string): KindXY {
+            let k = Kinds.find(k => (<KindXY>k).id == id);
+            if (!k) {
+                k = createKind(id);
+                Kinds.push(k);
+            }
+            return k;
+        }
         const Relations: RelationXY[] = [];
 
         for (let r of m.Relations) {
@@ -131,8 +135,8 @@ export namespace Graph {
                 //User:Group:1
                 const t = r.split(":");
                 const l = t.length;
-                const source = l > 0 ? find(t[0].trim()) : null;
-                const target = l > 1 ? find(t[1].trim()) : null;
+                const source = l > 0 ? findOrCreateKind(t[0].trim()) : null;
+                const target = l > 1 ? findOrCreateKind(t[1].trim()) : null;
                 if (source && target) {
                     Relations.push({
                         id: r,
@@ -148,8 +152,9 @@ export namespace Graph {
                 let source: KindXY | undefined = undefined;
                 let target: KindXY | undefined = undefined;
                 if (r.source && typeof r.source === "string")
-                    source = find(r.source);
-                if (typeof r.target === "string") target = find(r.target);
+                    source = findOrCreateKind(r.source);
+                if (typeof r.target === "string")
+                    target = findOrCreateKind(r.target);
                 if (source && target) {
                     r.source = source;
                     r.target = target;
