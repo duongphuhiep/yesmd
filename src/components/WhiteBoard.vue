@@ -18,6 +18,7 @@
             :key="k.id"
             v-for="k in src.Kinds"
             :src="k"
+            :ismultlink="src.IsMultiLink(k)"
             :d3flayout="d3flayout"
             :colaflayout="colaflayout"
         ></Kind>

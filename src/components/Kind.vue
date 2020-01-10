@@ -35,12 +35,14 @@ import * as cola from "webcola";
 export default class Kind extends Vue {
     @Prop(Object) readonly d3flayout: Graph.D3FLayout = null;
     @Prop(Object) readonly colaflayout: Graph.ColaFLayout = null;
+    @Prop(Boolean) readonly ismultilink!: boolean;
 
     @Model("change", { type: Object })
     readonly src!: Graph.KindXY;
 
     get color(): string {
         if (this.src.isLink) return "cyan";
+        if (this.ismultilink) return "green";
         return "yellow";
     }
 

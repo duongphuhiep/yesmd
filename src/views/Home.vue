@@ -9,12 +9,12 @@ import { Vue, Component } from "vue-property-decorator";
 import WhiteBoard from "@/components/WhiteBoard.vue";
 import { Graph } from "@/logic/graph";
 
-import fakeData from "@/../tests/data-samples/rbac";
+import fakeData from "@/../tests/data-samples/tg";
 
 @Component({
     components: { WhiteBoard },
 })
 export default class Home extends Vue {
-    graph = Graph.buildDetail(fakeData);
+    graph = Graph.buildDetailFromCompact(fakeData);
 }
 </script>

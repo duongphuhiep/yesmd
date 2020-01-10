@@ -44,9 +44,27 @@ export namespace Graph {
         Relations: Relation[];
     }
 
-    export interface YModelXY extends YModel {
-        Kinds: KindXY[];
-        Relations: RelationXY[];
+    export class YModelXY implements YModel {
+        public Kinds: KindXY[] = [];
+        public Relations: RelationXY[] = [];
+        public constructor(k: KindXY[], r: RelationXY[]) {
+            this.Kinds = k;
+            this.Relations = r;
+        }
+        public IsMultiLink(k: KindXY): boolean {
+            if (k.isLink) return false;
+            let count = 0;
+            for (let r of this.Relations) {
+                if (
+                    (r.type === RelationType.Normal || r.type) &&
+                    r.source.id == k.id
+                ) {
+                    count++;
+                }
+                if (count > 1) return true;
+            }
+            return false;
+        }
     }
 
     export enum RelationType {
@@ -162,7 +180,7 @@ export namespace Graph {
                 }
             }
         }
-        return { Kinds, Relations };
+        return new YModelXY(Kinds, Relations);
     }
 
     export function minDistant(

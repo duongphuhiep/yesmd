@@ -21,7 +21,8 @@ describe("Graph Test", () => {
                 "k2:k3",
                 { id: "k2:k4", source: "k2", target: "k4" },
                 "k5:k4:4",
-                "k6:k5:2"
+                "k6:k5:2",
+                "k0:k6"
             ],
         };
 
@@ -29,6 +30,7 @@ describe("Graph Test", () => {
 
         //kind object created
         expect(gg1.Kinds[0].id).toEqual("k0");
+        expect(gg1.IsMultiLink(gg1.Kinds[0])).toBe(true);
 
         //basic relation object
         expect(gg1.Relations[0].source).toEqual(gg1.Kinds[0]);
