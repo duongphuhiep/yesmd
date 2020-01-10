@@ -57,7 +57,7 @@ export namespace Graph {
             for (let r of this.Relations) {
                 if (
                     (r.type === RelationType.Normal || r.type) &&
-                    r.source.id == k.id
+                    r.target.id == k.id
                 ) {
                     count++;
                 }
@@ -266,7 +266,7 @@ export namespace Graph {
                     Conf.GRID * 3
                 );
             })
-            //.jaccardLinkLengths(Conf.GRID*2, 0.7)
+            //.jaccardLinkLengths(Conf.GRID * 25, 0.7)
             .avoidOverlaps(true);
         return layout;
     }

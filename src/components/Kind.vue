@@ -42,7 +42,7 @@ export default class Kind extends Vue {
 
     get color(): string {
         if (this.src.isLink) return "cyan";
-        if (this.ismultilink) return "green";
+        if (this.ismultilink) return "#00ff00ff";
         return "yellow";
     }
 
